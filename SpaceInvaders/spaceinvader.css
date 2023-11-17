@@ -1,0 +1,114 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-family: "Pixelify Sans", sans-serif;
+  font-weight: 600;
+  color: rgb(68, 0, 128);
+  margin: 15px;
+}
+p {
+  margin: 0;
+}
+
+.game-rule {
+  font-family: "Pixelify Sans", sans-serif;
+  color: rgb(68, 0, 128);
+  margin: 0 auto 10px auto;
+  text-align: center;
+}
+
+#game-container {
+  position: relative;
+  width: 30vw;
+  height: 80vh;
+  background-color: black;
+  border: solid greenyellow 3px;
+  margin: auto auto 20px auto;
+}
+
+.defender {
+  position: absolute;
+  background-image: url(defender.png);
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  top: 90%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.defender-img {
+  width: 50px;
+  height: 50px;
+}
+
+.defender-lives {
+  width: 20px;
+  height: 20px;
+  margin: 5px auto auto 5px;
+}
+
+.alien-container {
+  position: relative;
+  /* display: grid;
+  grid-template-rows: repeat(5, 1fr);
+  grid-template-columns: repeat(8, 1fr); */
+  width: 80%;
+  /* top: 50px;
+  left: 50%;
+  transform: translateX(-50%); */
+}
+
+.alien {
+  background-image: url("aliens.png");
+  background-size: cover;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+}
+
+.score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  font-family: "Pixelify Sans", sans-serif;
+  color: white;
+  margin: 10px 10px auto auto;
+}
+
+.head-info-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.defender-box {
+  position: relative;
+  top: 80%;
+}
+
+.missile {
+  position: absolute;
+  background-color: greenyellow;
+  height: 8px;
+  width: 5px;
+  /* left: 50%; */
+}
+
+.alien-bullet {
+  position: absolute;
+  background-color: #8f82bc;
+  height: 8px;
+  width: 3px;
+  /* left: 50%; */
+}
+
+.invisible {
+  display: none;
+}
