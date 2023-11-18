@@ -21,18 +21,18 @@ const aliens = [];
 
 let containerWidth = $("#game-container").width();
 
-function borderCollision(object) {
-  let containerOffsetLeft = containerPosition.left;
-  let objectOffsetLeft = object.offset().left;
-  if (
-    objectOffsetLeft > containerOffsetLeft &&
-    objectOffsetLeft < containerOffsetLeft + containerWidth
-  ) {
-    return false;
-  } else {
-    return true;
-  }
-}
+// function borderCollision(object) {
+//   let containerOffsetLeft = containerPosition.left;
+//   let objectOffsetLeft = object.offset().left;
+//   if (
+//     objectOffsetLeft > containerOffsetLeft &&
+//     objectOffsetLeft < containerOffsetLeft + containerWidth
+//   ) {
+//     return false;
+//   } else {
+//     return true;
+//   }
+// }
 
 //////DEFENDER//////
 
@@ -50,6 +50,7 @@ $(document).on("keydown", function move(event) {
 
     case 32:
       fireMissile();
+      missileHit();
       break;
   }
   if (defenderPosition.left < containerPosition.left) {
@@ -68,7 +69,7 @@ $(document).on("keydown", function move(event) {
 // fire a missile from the defender
 
 function fireMissile() {
-  let missilePosition = {
+  missilePosition = {
     top: defenderPosition.top,
     left: defenderPosition.left + defender.width() * 0.5,
   };
@@ -87,7 +88,7 @@ function fireMissile() {
         clearInterval(missileInterval);
         missileFired = false;
       }
-    }, 50);
+    }, 30);
   }
 }
 
@@ -197,59 +198,78 @@ setInterval(function () {
 ////////HITTING BETWEEN DEFENDER AND ALIENS/////////
 
 // when defender's missile hit alien
-function checkMissileHit() {
-  // compare the positions of missile to positions of each aliens[];
-  // - not sure how to compare all the aliens location and found the collide one, for loop?
-  // if (missile position equal to one of the alien's)
-  // return true;
-  //
-  // else {
-  //   return false;}
+function checkCollision(a, b) {
+  let aPosition = a.offset();
+  let aWidth = a.width();
+  let aHeight = a.height();
+
+  let bPosition = b.offset();
+  let bWidth = b.width();
+  let bHeight = b.height();
+
+  if (
+    aPosition.left < bPosition.left + bWidth &&
+    aPosition.left + aWidth > bPosition.left &&
+    aPosition.top < bPosition.top + bHeight &&
+    aPosition.top + aHeight > bPosition.top
+  ) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
-while (checkMissileHit()) {
-  // if (aliens[].length >1)
-  // alien hide, missile hide
-  // status change
-  // missileFired = false;
-  // score += 10;
-  // $("#score").text(score);
-  // else
-  // prompt user win in DOM, allow to restart
+function missileHit() {
+  // compare the positions of missile to positions of each aliens[];
+  for (let i = 0; i < aliens.length; i++) {
+    if (checkCollision(aliens[i], missile)) {
+      console.log("hit alien");
+      aliens[i].hide();
+      missile.addClass("invisible");
+      score += 10;
+      $("#score").text(score);
+      missileFired = false;
+      return true;
+    } else {
+      console.log("not hit");
+      return false;
+    }
+  }
 }
 
 // when alien's bullet hit defender
-function checkBulletHit() {
-  // compare the positions of bullet and defender
-  //  if (bullet's position equal to defender's)
-  //   return true;
-  //   else {
-  //   return false;
-  //  }
-}
-while (checkBulletHit()) {
-  // if (defenderLives>1)
-  // hide alien's bullet
-  // defenderLive -= 1;
-  // hide lives img in DOM
-  // generate another bullet
-  // else
-  // gameOver();
+function bulletHit() {
+  if (checkCollision(bullet, defender)) {
+    if (defenderLives > 1) {
+      defender.addClass("invisible");
+      defenderLives--;
+      $(`.life${defenderLives}`).addClass("invisible");
+      setTimeout(defender.addClass("invisible"), 2000);
+    }
+  } else {
+    defender.addClass("invisible");
+  }
 }
 
 ///////GAME MECHANICS//////
+function playerWin() {}
+
+function playerLose() {}
+
 let gameStarted = false;
 
 function gameInitializer() {
   // defender position
+  defenderPosition.left = 695;
   // remove all aliens, then add aliens to 40
   // aliens position
-  // score = 0
-  // defenderLives = 3
+  score = 0;
+  defenderLives = 3;
   // prompt user start new game with enter
 }
 
 // detect keyboard event on enter
+
 function gameStarter() {
   gameStarted = true;
 
