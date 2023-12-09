@@ -19,6 +19,15 @@ I am currently trying to make a webpage-based Space Invaders game, using JavaScr
 ### 21/11/2023
 * Fixed the alien group's early return problem
 
+  (too many group projects couldn't find the time to continue)
+
 ### 09/12/2023
 * Finally fix the checkCollison function.
-* Another issue shows up, the missile doesn't hide after hitting the alien. let me see...
+* Another two issue shows up:
+  1. the missile doesn't hide after hitting the alien.
+     possible reason:
+     - conflict with another code that controls visibility in the previous function
+  2. while the alien hides, it still shoots bullets but from (0,0)
+     possible reason:
+     - aliens just become invisible, but still stay there in the array
+     - need to add a condition to filter the invisible ones before aliens drop bullets
