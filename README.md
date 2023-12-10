@@ -21,7 +21,7 @@ I am currently trying to make a webpage-based Space Invaders game, using JavaScr
 
   (too many group projects couldn't find the time to continue)
 
-### 09/12/2023
+### 09/12/2023 - noon
 * Finally fix the checkCollison function.
 * Another two issue shows up:
   1. the missile doesn't hide after hitting the alien.
@@ -31,3 +31,11 @@ I am currently trying to make a webpage-based Space Invaders game, using JavaScr
      possible reason:
      - aliens just become invisible, but still stay there in the array
      - need to add a condition to filter the invisible ones before aliens drop bullets
+
+### 09/12/2023 - night
+* Fix the problem mentioned at noon:
+  1. missile doesn't hide after hitting aliens: I call the missleHit function inside the fireMissile function, and ask it to clear missileInterval once missleHit is true;
+  2. dead alien still shoot: added a condition to check if ".alien:eq(randomAlien)" is invisible. only shoot when it's visible. Used the same method
+     to fix score over-calculate issue
+* Hide the defender when it got hit by alien, and reduce its live
+* code part of the game mechanic function, to be continue tomorrow
