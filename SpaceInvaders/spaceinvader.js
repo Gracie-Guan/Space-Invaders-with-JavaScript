@@ -25,27 +25,30 @@ let containerWidth = $("#game-container").width();
 // move the defender by keyboard
 
 $(document).on("keydown", function move(event) {
-  switch (event.keyCode) {
-    case 37:
-      defenderPosition.left -= 10;
-      break;
+  if (!defender.hasClass("invisible")) {
+    switch (event.keyCode) {
+      case 13:
+        gameStarter();
+        break;
 
-    case 39:
-      defenderPosition.left += 10;
-      break;
+      case 37:
+        defenderPosition.left -= 10;
+        break;
 
-    case 32:
-      fireMissile();
-      setInterval(function () {
-        if (missilePosition.top > containerPosition.top) {
-          missileHit();
-        }
-      }, 50);
-      break;
+      case 39:
+        defenderPosition.left += 10;
+        break;
+
+      case 32:
+        fireMissile();
+        break;
+    }
   }
+
   if (defenderPosition.left < containerPosition.left) {
     defenderPosition.left = containerPosition.left + 3; //the reason of +3 is that game container has 3px border
   }
+
   if (
     defenderPosition.left + defender.width() >
     containerPosition.left + containerWidth
@@ -69,13 +72,16 @@ function fireMissile() {
 
     let missileInterval = setInterval(function () {
       missilePosition.top -= 20;
+      missile.offset(missilePosition);
+      missile.removeClass("invisible");
       if (missilePosition.top > containerTop) {
-        missile.offset(missilePosition);
-        missile.removeClass("invisible");
+        if (missileHit()) {
+          clearInterval(missileInterval);
+        }
       } else {
-        missile.toggleClass("invisible");
         clearInterval(missileInterval);
         missileFired = false;
+        missile.addClass("invisible");
       }
     }, 30);
   }
@@ -108,27 +114,30 @@ addAliens();
 let moveRight = true;
 
 function aliensMove() {
-  if (moveRight) {
-    alienGroupPosition.left += 1;
-  } else {
-    alienGroupPosition.left -= 1;
+  if (gameStarted) {
+    if (moveRight) {
+      alienGroupPosition.left += 1;
+    } else {
+      alienGroupPosition.left -= 1;
+    }
+    // console.log(alienGroup.width());
+    if (
+      alienGroupPosition.left <= containerPosition.left ||
+      alienGroupPosition.left + alienGroup.width() >
+        containerPosition.left + $("#game-container").width()
+    ) {
+      moveRight = !moveRight;
+      alienGroupPosition.top += 40;
+    }
+    alienGroup.offset(alienGroupPosition);
   }
-  // console.log(alienGroup.width());
-  if (
-    alienGroupPosition.left <= containerPosition.left ||
-    alienGroupPosition.left + alienGroup.width() >
-      containerPosition.left + $("#game-container").width()
-  ) {
-    moveRight = !moveRight;
-    alienGroupPosition.top += 40;
-  }
-  alienGroup.offset(alienGroupPosition);
 }
 
 // Make them stop when bump into the defender
 function checkBump() {
   if ($(".alien").last().offset().top >= defenderPosition.top) {
     clearInterval(aliensInterval);
+    gameOver();
     return true;
   } else {
     aliensMove();
@@ -148,26 +157,31 @@ function alienBullet() {
     left: randomShootPosition.left + $(".alien").width() * 0.5,
   };
 
-  if (!alienFired) {
-    alienFired = true;
-    // interval() method to make bullet move
-    let bulletInterval = setInterval(function () {
-      bulletPosition.top += 20;
-      if (
-        bulletPosition.top <
-        containerPosition.top + $("#game-container").height()
-      ) {
-        // update bullet position
-        $(".alien-bullet").offset(bulletPosition);
-        $(".alien-bullet").removeClass("invisible");
-      } else {
-        $(".alien-bullet").addClass("invisible");
-        clearInterval(bulletInterval);
-        alienFired = false;
-      }
-    }, 50);
+  if (!$(".alien:eq(" + randomAlien + ")").hasClass("invisible")) {
+    if (!alienFired) {
+      alienFired = true;
+
+      // interval() method to make bullet move
+      let bulletInterval = setInterval(function () {
+        bulletPosition.top += 20;
+        if (
+          bulletPosition.top <
+          containerPosition.top + $("#game-container").height()
+        ) {
+          // update bullet position
+          $(".alien-bullet").offset(bulletPosition);
+          $(".alien-bullet").removeClass("invisible");
+          bulletHit();
+        } else {
+          $(".alien-bullet").addClass("invisible");
+          clearInterval(bulletInterval);
+          alienFired = false;
+        }
+      }, 50);
+    }
   }
 }
+
 // Set up an interval to call alienBullet
 setInterval(function () {
   if (!alienFired) {
@@ -185,11 +199,8 @@ function checkCollision(a, b) {
     a.offset().top + a.height() > b.offset().top &&
     a.offset().top <= b.offset().top + b.height()
   ) {
-    // console.log("collided");
     return true;
   } else {
-    // console.log(a.offset().left, a.offset().top);
-    // console.log(b.offset().left, b.offset().top);
     return false;
   }
 }
@@ -197,35 +208,23 @@ function checkCollision(a, b) {
 function missileHit() {
   // compare the positions of missile to positions of each aliens[];
   for (let i = 0; i < aliens.length; i++) {
-    if (checkCollision(aliens[i], missile)) {
+    if (checkCollision(aliens[i], missile) === true) {
+      let thisAlien = $(".alien:eq(" + i + ")");
+      if (!thisAlien.hasClass("invisible")) {
+        score += 10;
+        $("#score").text(score);
+      }
       aliens[i].addClass("invisible");
-      missile.toggleClass("invisible");
-
-      score += 10;
-      $("#score").text(score);
+      missile.addClass("invisible");
       missileFired = false;
-      return true; // exit the function once a collision is detected
+      return true;
     }
   }
 }
 
-// function missileHit() {
-//   // compare the positions of missile to positions of each aliens[];
-//   for (let i = 0; i < aliens.length; i++) {
-//     if (checkCollision(aliens[i], missile)) {
-//       aliens[i].hide();
-//       missile.toggleClass("invisible");
-//       score += 10;
-//       $("#score").text(score);
-//       missileFired = false;
-//     }
-//   }
-// }
-
 // when alien's bullet hit defender
 function bulletHit() {
-  //setInterval to continuely check and update bullet position
-
+  //setInterval to keep check and update bullet position
   if (checkCollision(bullet, defender)) {
     if (defenderLives > 1) {
       defender.addClass("invisible");
@@ -233,10 +232,15 @@ function bulletHit() {
       $(`.life${defenderLives}`).addClass("invisible");
       setTimeout(function () {
         defender.addClass("invisible");
-      }, 2000);
+      }, 500);
+      setTimeout(function () {
+        defender.removeClass("invisible");
+      }, 500);
+    } else {
+      gameOver();
+      defender.addClass("invisible");
+      return;
     }
-  } else {
-    defender.addClass("invisible");
   }
 }
 
@@ -249,27 +253,23 @@ let gameStarted = false;
 
 function gameInitializer() {
   // defender position
-  defenderPosition.left = 695;
+  defender.css("left", "50%");
   // remove all aliens, then add aliens to 40
-  // aliens position
+  $(".alien").remove();
+  addAliens();
   score = 0;
   defenderLives = 3;
   // prompt user start new game with enter
 }
 
 // detect keyboard event on enter
-
 function gameStarter() {
   gameStarted = true;
-
-  // gameStarted = true
-  // allow key board event
-  // gameInitializer()
-  // call aliensMove()
+  gameInitializer();
 }
 
 function gameOver() {
-  // gameStarted = false
+  gameStarted = false;
   // allow start new game (show in DOM)
   // aliens stop moving
   // not response to keyboard event
