@@ -17,6 +17,12 @@ let gameStarted = false;
 
 const aliens = [];
 
+let moveAudio = new Audio("game-audio/move.wav");
+let bgAudio = new Audio("game-audio/bgloop.mp3");
+let explodeAudio = new Audio("game-audio/explode.wav");
+let loseAudio = new Audio("game-audio/lose.wav");
+let winAudio = new Audio("game-audio/win.wav");
+
 //////DEFENDER//////
 
 // move the defender by keyboard
@@ -26,14 +32,18 @@ $(document).on("keydown", function move(event) {
   switch (event.keyCode) {
     case 13: //enter
       gameStarter();
+      bgAudio.play();
       break;
 
     case 37: //left
       defenderPosition.left -= 10;
+
+      moveAudio.play();
       break;
 
     case 39: //right
       defenderPosition.left += 10;
+      moveAudio.play();
       break;
 
     case 32: //space
@@ -217,6 +227,7 @@ function missileHit() {
       }
       aliens[i].addClass("invisible");
       missile.addClass("invisible");
+      checkWin();
       missileFired = false;
       return true;
     }
@@ -227,7 +238,8 @@ function missileHit() {
 function bulletHit() {
   //setInterval to keep check and update bullet position
   if (checkCollision(bullet, defender)) {
-    if (defenderLives > 1) {
+    if (defenderLives > 0) {
+      explodeAudio.play();
       defender.addClass("invisible");
       defenderLives--;
       $(`.life${defenderLives}`).addClass("invisible");
@@ -253,11 +265,13 @@ function checkWin() {
 
 function playerWins() {
   gameStarted = false;
+  winAudio.play();
   $(".play-win").removeClass("invisible");
 }
 
 function playerLose() {
   gameStarted = false;
+  loseAudio.play();
   $(".play-lose").removeClass("invisible");
 }
 
@@ -265,24 +279,18 @@ function gameInitializer() {
   defender.css("left", "50%");
   defender.removeClass("invisible");
   $(".alien").remove();
-  addAliens();
   alienGroup.css({ left: "0", top: "0" });
+  addAliens();
   score = 0;
   alienFired = false;
 
   defenderLives = 3;
   $(".defender-lives").removeClass("invisible");
 
-  if (!$(".play-win").hasClass("invisible")) {
-    $(".play-win").addClass("invisible");
-  } else if (!$(".play-lose").hasClass("invisible")) {
-    $(".play-lose").addClass("invisible");
-  }
-
-  // prompt user start new game with enter
+  $(".play-win").addClass("invisible");
+  $(".play-lose").addClass("invisible");
 }
 
-// detect keyboard event on enter
 function gameStarter() {
   gameStarted = true;
   $(".game-start").addClass("invisible");
