@@ -12,41 +12,37 @@ let score = 0;
 let defenderLives = 3;
 let singleAlien = $(".alien");
 let alienFired = false;
+let containerWidth = $("#game-container").width();
+let gameStarted = false;
 
 const aliens = [];
-///////GENERAL FUNCTION//////
-
-// check if the target object inside the game container
-
-let containerWidth = $("#game-container").width();
 
 //////DEFENDER//////
 
 // move the defender by keyboard
 
 $(document).on("keydown", function move(event) {
-  if (!defender.hasClass("invisible")) {
-    switch (event.keyCode) {
-      case 13:
-        gameStarter();
-        break;
+  // if (!defender.hasClass("invisible")) {
+  switch (event.keyCode) {
+    case 13: //enter
+      gameStarter();
+      break;
 
-      case 37:
-        defenderPosition.left -= 10;
-        break;
+    case 37: //left
+      defenderPosition.left -= 10;
+      break;
 
-      case 39:
-        defenderPosition.left += 10;
-        break;
+    case 39: //right
+      defenderPosition.left += 10;
+      break;
 
-      case 32:
-        fireMissile();
-        break;
-    }
+    case 32: //space
+      fireMissile();
+      break;
   }
 
   if (defenderPosition.left < containerPosition.left) {
-    defenderPosition.left = containerPosition.left + 3; //the reason of +3 is that game container has 3px border
+    defenderPosition.left = containerPosition.left + 3; // game container has 3px border
   }
 
   if (
@@ -108,7 +104,7 @@ function addAliens() {
   }
 }
 
-addAliens();
+// addAliens();
 
 // Allow the aliens auto move AS A GROUP
 let moveRight = true;
@@ -135,9 +131,13 @@ function aliensMove() {
 
 // Make them stop when bump into the defender
 function checkBump() {
+  if (!gameStarted) {
+    return;
+  }
+
   if ($(".alien").last().offset().top >= defenderPosition.top) {
     clearInterval(aliensInterval);
-    gameOver();
+    playerLose();
     return true;
   } else {
     aliensMove();
@@ -184,7 +184,7 @@ function alienBullet() {
 
 // Set up an interval to call alienBullet
 setInterval(function () {
-  if (!alienFired) {
+  if (!alienFired && gameStarted) {
     alienBullet();
   }
 }, 1000);
@@ -207,6 +207,7 @@ function checkCollision(a, b) {
 
 function missileHit() {
   // compare the positions of missile to positions of each aliens[];
+
   for (let i = 0; i < aliens.length; i++) {
     if (checkCollision(aliens[i], missile) === true) {
       let thisAlien = $(".alien:eq(" + i + ")");
@@ -231,47 +232,59 @@ function bulletHit() {
       defenderLives--;
       $(`.life${defenderLives}`).addClass("invisible");
       setTimeout(function () {
-        defender.addClass("invisible");
-      }, 500);
-      setTimeout(function () {
         defender.removeClass("invisible");
       }, 500);
     } else {
-      gameOver();
+      $(`.defender-lives.life1`).addClass("invisible");
       defender.addClass("invisible");
+      playerLose();
       return;
     }
   }
 }
 
 ///////GAME MECHANICS//////
-function playerWins() {}
 
-function playerLoses() {}
+function checkWin() {
+  if ($(".alien.invisible").length === aliens.length) {
+    playerWins();
+  }
+}
 
-let gameStarted = false;
+function playerWins() {
+  gameStarted = false;
+  $(".play-win").removeClass("invisible");
+}
+
+function playerLose() {
+  gameStarted = false;
+  $(".play-lose").removeClass("invisible");
+}
 
 function gameInitializer() {
-  // defender position
   defender.css("left", "50%");
-  // remove all aliens, then add aliens to 40
+  defender.removeClass("invisible");
   $(".alien").remove();
   addAliens();
+  alienGroup.css({ left: "0", top: "0" });
   score = 0;
+  alienFired = false;
+
   defenderLives = 3;
+  $(".defender-lives").removeClass("invisible");
+
+  if (!$(".play-win").hasClass("invisible")) {
+    $(".play-win").addClass("invisible");
+  } else if (!$(".play-lose").hasClass("invisible")) {
+    $(".play-lose").addClass("invisible");
+  }
+
   // prompt user start new game with enter
 }
 
 // detect keyboard event on enter
 function gameStarter() {
   gameStarted = true;
+  $(".game-start").addClass("invisible");
   gameInitializer();
-}
-
-function gameOver() {
-  gameStarted = false;
-  // allow start new game (show in DOM)
-  // aliens stop moving
-  // not response to keyboard event
-  // add other effect like sound of animation
 }
