@@ -35,7 +35,13 @@ I am currently trying to make a webpage-based Space Invaders game, using JavaScr
 ### 09/12/2023 - night
 * Fix the problem mentioned at noon:
   1. missile doesn't hide after hitting aliens: I call the missleHit function inside the fireMissile function, and ask it to clear missileInterval once missleHit is true;
-  2. dead alien still shoot: added a condition to check if ".alien:eq(randomAlien)" is invisible. only shoot when it's visible. Used the same method
+  2. dead alien still shoots: added a condition to check if ".alien:eq(randomAlien)" is invisible. only shoot when it's visible. Used the same method
      to fix score over-calculate issue
-* Hide the defender when it got hit by alien, and reduce its live
-* code part of the game mechanic function, to be continue tomorrow
+* Hide the defender when it gets hit by the alien, and reduce its life
+* code part of the game mechanic function, to be continued tomorrow
+
+### 11/12/2023 
+* Define the condition for Win or Lose, and show a notification after the condition met
+* Setup initial status
+* Added sound effects for movement, got hit, background music, win and lose
+* Still having issue with restart, will fix that later
