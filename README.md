@@ -1,5 +1,7 @@
 # Space-Invaders-with-JavaScript
 I am currently trying to make a webpage-based Space Invaders game, using JavaScript and JQuery. It won't be a perfect solution but will demonstrate my thinking during the process I try to build it.
+Playable link: https://gracie-guan.github.io/Space-Invaders-with-JavaScript/index.html
+
 
 ### 17/11/2023
  
@@ -45,3 +47,5 @@ I am currently trying to make a webpage-based Space Invaders game, using JavaScr
 * Setup initial status
 * Added sound effects for movement, got hit, background music, win and lose
 * Still having issue with restart, will fix that later
+
+
