@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="spaceinvader.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap"
+      rel="stylesheet" />
+    <title>Space Invaders</title>
+  </head>
+  <body>
+    <h1>SPACE INVADERS</h1>
+    <p class="game-rule">
+      Press &larr; to move left; Press &rarr; to move right; Press space
+      bar to shoot;<br><strong> Press &crarr; to start new game.</strong>
+    </p>
+    <div id="game-container">
+      <div class="head-info-box">
+        <div class="defender-lives-box">
+          <img class="defender-lives life1" src="defender-live.png" />
+          <img class="defender-lives life2" src="defender-live.png" />
+          <img class="defender-lives life3" src="defender-live.png" />
+        </div>
+        <div class="score-box">
+          <p>SCORE</p>
+          <p id="score">0</p>
+        </div>
+      </div>
+
+      <div class="game-start"> Press ENTER to start/restart </div>
+      <div class="play-win invisible">Aliens Defeated! </br>Press ENTER to star new game</br></div> 
+      <div class="play-lose invisible">You Lose </br>
+        Press ENTER to star new game</br></div> 
+
+      <div class="alien-container">
+        
+      </div>
+
+      <div class="alien-bullet invisible"></div>
+
+
+      <div class="defender"></div>
+      <div class="missile invisible"></div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="spaceinvader.js" defer></script>
+  </body>
+</html>
