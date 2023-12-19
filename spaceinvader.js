@@ -147,7 +147,7 @@ function checkBump() {
 
   if ($(".alien").last().offset().top >= defenderPosition.top) {
     clearInterval(aliensInterval);
-    playerLose();
+    // playerLose();
     return true;
   } else {
     aliensMove();
@@ -238,20 +238,14 @@ function missileHit() {
 function bulletHit() {
   //setInterval to keep check and update bullet position
   if (checkCollision(bullet, defender)) {
-    if (defenderLives > 0) {
-      explodeAudio.play();
-      defender.addClass("invisible");
-      defenderLives--;
-      $(`.life${defenderLives}`).addClass("invisible");
-      setTimeout(function () {
-        defender.removeClass("invisible");
-      }, 500);
-    } else {
-      $(`.defender-lives.life1`).addClass("invisible");
-      defender.addClass("invisible");
-      playerLose();
-      return;
-    }
+    explodeAudio.play();
+    defender.addClass("invisible");
+    $(`.life${defenderLives}`).addClass("invisible");
+    defenderLives--;
+    setTimeout(function () {
+      defender.removeClass("invisible");
+    }, 500);
+    checkLose();
   }
 }
 
@@ -267,6 +261,12 @@ function playerWins() {
   gameStarted = false;
   winAudio.play();
   $(".play-win").removeClass("invisible");
+}
+
+function checkLose() {
+  if (defenderLives === 0 || checkBump() === true) {
+    playerLose();
+  }
 }
 
 function playerLose() {

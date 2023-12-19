@@ -30,6 +30,8 @@ p {
   background-color: black;
   border: solid greenyellow 3px;
   margin: auto auto 20px auto;
+  background-image: url(background.jpg);
+  background-size: cover;
 }
 
 .defender {
