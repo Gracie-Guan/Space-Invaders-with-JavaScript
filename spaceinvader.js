@@ -147,7 +147,7 @@ function checkBump() {
 
   if ($(".alien").last().offset().top >= defenderPosition.top) {
     clearInterval(aliensInterval);
-    // playerLose();
+    playerLose();
     return true;
   } else {
     aliensMove();
