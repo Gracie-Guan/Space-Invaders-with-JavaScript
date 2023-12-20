@@ -48,4 +48,5 @@ Playable link: https://gracie-guan.github.io/Space-Invaders-with-JavaScript/inde
 * Added sound effects for movement, got hit, background music, win and lose
 * Still having issue with restart, will fix that later
 
-
+### 19/12/2023
+* Fixed the bug with lose condition
